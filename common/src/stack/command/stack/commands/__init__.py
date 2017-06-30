@@ -414,7 +414,7 @@ class HostArgumentProcessor:
 						l.append('where rack == "%s"' % target)
 					adhoc = True
 					continue
-				if host.find('where') == 0:
+				elif host.find('where') == 0:
 					l.append(host)
 					adhoc = True
 					continue

@@ -9,7 +9,10 @@ from stack.cond import EvalCondExpr
 attrs = {
 	'pallets': "['stacki-5.0-sles12', 'SLES-12-sp2', 'nginx-12-sles12', 'highlands-5.0-sles12']",
 	'foo.bar': True,
-	'a.b.c.d': 'fred'
+	'a.b.c.d': 'fred',
+	'appliance': 'backend',
+	'appliance.longname': 'Backend'
+
 }
 
 def test_dot():
@@ -21,4 +24,7 @@ def test_dot():
 	assert(EvalCondExpr('a.b.c.d == "fred"', attrs))
 
 	assert(EvalCondExpr('"stacki-5.0-sles12" in pallets', attrs))
+
+	assert(EvalCondExpr('appliance.longname == "Backend"', attrs))
+	assert(EvalCondExpr('appliance == "backend"', attrs))
 

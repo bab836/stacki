@@ -25,10 +25,13 @@ class _CondEnv(UserDict):
 	used to create a special local() environment where all unresolved
 	variables evaluate to None.  This allows condintional expressions
 	that refer to non-existent attributes to evaluate to False."""
-	
+
+#	def __init__(self):
+#		self.state = 0
+
 	def __getitem__(self, key):
 
-#		print('__getitem__', key)
+		print('__getitem__', key)
 		
 		# Handle boolean special since they are not in the
 		# environment
@@ -42,6 +45,9 @@ class _CondEnv(UserDict):
 			val = UserDict.__getitem__(self, key)
 		except:
 			return None	# undefined vars are None
+
+		if val:
+			val = val[0]
 
 		# Try to convert value to a boolean
 		
@@ -118,6 +124,7 @@ def EvalCondExpr(cond, attrs):
 	all the attributes as variables.
 	"""
 
+	print('EvalCondExpr', cond)
 	if not cond:
 		return True
 
@@ -125,7 +132,8 @@ def EvalCondExpr(cond, attrs):
 	for (key, value) in attrs.items():
 		tokens = key.split('.')
 		if len(tokens) == 1:
-			env[tokens[0]] = value
+			head = tokens[0]
+			tail = value
 		else:
 			# Loop backwards through the attribute name and turn a
 			# dotted attribute into a valid python object.
@@ -136,8 +144,31 @@ def EvalCondExpr(cond, attrs):
 			tail = type('struct', (object, ), { tokens.pop(): value })
 			while len(tokens) > 1:
 				tail = type('struct', (object, ), { tokens.pop(): tail })
-			env[tokens.pop()] = tail
 
+			head = tokens.pop()
+
+		# Store both the string and object, for when we have
+		# attributes like:
+		#
+		# appliance           -- this is a string variable
+		# appliance.longname  -- this is a string but we lookup 
+		#                        using the 'appliance' object
+
+
+		### TODO - need to keep track of both the string and
+		### object with the same name, but append doesn't
+		### work. Need to store a a tuple (string, object) and
+		### eval the string first if that fails with an
+		### exception try the object.
+
+		if head in env:
+			o = env[head]
+			env[head] = []
+		print('1env', head, env[head])
+		env[head].append(tail)
+		print('2env', head, env[head])
+
+	print('env', env)
 	result = eval(cond, globals(), env)
 
 	return result
