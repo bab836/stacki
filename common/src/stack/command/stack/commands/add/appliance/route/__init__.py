@@ -41,10 +41,11 @@ class Command(stack.commands.add.appliance.command):
 
 		apps = self.getApplianceNames(args)
 
-		(address, gateway, netmask,) = self.fillParams([
+		(address, gateway, netmask, interface) = self.fillParams([
 			('address', None, True),
 			('gateway', None, True),
-			('netmask', '255.255.255.255')
+			('netmask', '255.255.255.255'),
+			('interface', None),
 			])
 		
 		if len(args) == 0:
@@ -77,12 +78,23 @@ class Command(stack.commands.add.appliance.command):
 				(address, app)) 
 			if rows:
 				raise CommandError(self, 'route exists')
-		
+
+		#
+                # if interface is being set, check if it exists first
+                #
+                if interface:
+                        rows = self.db.execute("""select * from networks
+                                where node=1 and device='%s'""" % interface)
+                        if not rows:
+                                raise CommandError(self, 'interface does not exist')
+                else:
+                        interface='NULL'	
+
 		# Now that we know things will work insert the route for
 		# all the appliances
 		
 		for app in apps:	
 			self.db.execute("""insert into appliance_routes values 
 				((select id from appliances where name='%s'),
-				'%s', '%s', %s, %s)""" %
-				(app, address, netmask, gateway, subnet))
+				'%s', '%s', %s, %s, '%s')""" %
+				(app, address, netmask, gateway, subnet, ubterface))
