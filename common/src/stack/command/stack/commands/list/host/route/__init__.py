@@ -34,12 +34,13 @@ class Command(stack.commands.list.host.command):
 		for host in self.getHostnames(args):
 			routes = self.db.getHostRoutes(host, 1)
 
-			for key in sorted(routes.keys()):		
+			for network in sorted(routes.keys()):
+				(netmask, gateway, interface, source) = routes[network]
 				self.addOutput(host, 
 					(key,
-					routes[key][0], 
-					routes[key][1], 
-					routes[key][2]))
+					netmask, 
+					gateway, 
+					source))
 
 		self.endOutput(header=['host', 
 			'network', 'netmask', 'gateway', 'source' ],
