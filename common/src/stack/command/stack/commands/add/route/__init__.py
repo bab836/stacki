@@ -77,7 +77,7 @@ class Command(stack.commands.add.command):
 		else:
 			interface='NULL'
 		
-		self.db.execute("""inserti into global_routes
+		self.db.execute("""insert into global_routes
 				values ('%s', '%s', %s, %s, '%s')""" %
 				(address, netmask, gateway, subnet, interface))
 

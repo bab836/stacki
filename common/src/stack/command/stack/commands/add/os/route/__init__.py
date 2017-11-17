@@ -76,15 +76,15 @@ class Command(stack.commands.add.os.command):
 			if rows:
 				raise CommandError(self, 'route exists')
 		#
-                # if interface is being set, check if it exists first
-                #
-                if interface:
-                        rows = self.db.execute("""select * from networks
-                                where node=1 and device='%s'""" % interface)
-                        if not rows:
-                                raise CommandError(self, 'interface does not exist')
-                else:
-                        interface='NULL'	
+		# if interface is being set, check if it exists first
+		#
+		if interface:
+			rows = self.db.execute("""select * from networks
+				where node=1 and device='%s'""" % interface)
+			if not rows:
+				raise CommandError(self, 'interface does not exist')
+		else:
+			interface='NULL'	
 		
 		# Now that we know things will work insert the route for
 		# all the OSes
