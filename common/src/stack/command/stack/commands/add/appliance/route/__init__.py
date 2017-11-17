@@ -97,4 +97,4 @@ class Command(stack.commands.add.appliance.command):
 			self.db.execute("""insert into appliance_routes values 
 				((select id from appliances where name='%s'),
 				'%s', '%s', %s, %s, '%s')""" %
-				(app, address, netmask, gateway, subnet, ubterface))
+				(app, address, netmask, gateway, subnet, interface))
