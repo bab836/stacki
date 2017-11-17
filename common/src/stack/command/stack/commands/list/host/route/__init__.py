@@ -36,11 +36,8 @@ class Command(stack.commands.list.host.command):
 
 			for network in sorted(routes.keys()):
 				(netmask, gateway, interface, source) = routes[network]
-				self.addOutput(host, 
-					(key,
-					netmask, 
-					gateway, 
-					source))
+				self.addOutput(host,
+					(network, netmask, gateway,	source))
 
 		self.endOutput(header=['host', 
 			'network', 'netmask', 'gateway', 'source' ],
