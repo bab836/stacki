@@ -82,12 +82,7 @@ class Command(stack.commands.add.appliance.command):
 		#
 		# if interface is being set, check if it exists first
 		#
-		if interface:
-			rows = self.db.execute("""select * from networks
-				where node=1 and device='%s'""" % interface)
-			if not rows:
-				raise CommandError(self, 'interface does not exist')
-		else:
+		if not interface:
 			interface='NULL'	
 
 		# Now that we know things will work insert the route for
